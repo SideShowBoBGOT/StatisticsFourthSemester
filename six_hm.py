@@ -59,7 +59,6 @@ def get_sequence_distributed_like_result(
     frequencies_pairs: list[tuple[float, float]] = []
     for probability, freq in zip(probabilities, frequencies):
         theoretical_freq = probability * n
-        theoretical_freq = my_round(theoretical_freq)
         frequencies_pairs.append((freq, theoretical_freq))
     freq_diffs_squared = list(
         map(lambda pair: math.pow(pair[0] - pair[1], 2), frequencies_pairs)
@@ -103,26 +102,6 @@ def is_intervals_sequence_distributed_like(
     return result
 
 
-# https://en.wikipedia.org/wiki/Pearson%27s_chi-squared_test
-def is_discrete_sequence_distributed_like(
-        discrete: list[tuple[float, int]],
-        distribution_function_generator,
-        confidence_level: float
-) -> bool:
-    n = sum(x[1] for x in discrete)
-    func, number_of_parameters = get_distribution_function(discrete, distribution_function_generator)
-    l = len(discrete)
-    probabilities: list[float] = []
-    frequencies: list[float] = []
-    for el in discrete:
-        probability = func(el[0])
-        probabilities.append(probability)
-        frequencies.append(el[1])
-    result = get_sequence_distributed_like_result(
-        probabilities, frequencies, n, l, number_of_parameters, confidence_level)
-    return result
-
-
 # https://real-statistics.com/tests-normality-and-symmetry/statistical-tests-normality-symmetry/kolmogorov-smirnov-test/
 def is_intervals_sequence_normally_distributed(intervals: list[tuple[float, float, int]],
                                                confidence_level: float) -> bool:
@@ -152,31 +131,11 @@ def is_intervals_sequence_normally_distributed(intervals: list[tuple[float, floa
     return result
 
 
-# https://real-statistics.com/tests-normality-and-symmetry/statistical-tests-normality-symmetry/kolmogorov-smirnov-test/
-def is_discrete_sequence_normally_distributed(discrete: list[tuple[float, int]], confidence_level: float) -> bool:
-    result = is_discrete_sequence_distributed_like(
-        discrete,
-        normal_distribution_function_not_normalized_values_generator,
-        confidence_level
-    )
-    return result
-
-
 # https://real-statistics.com/other-key-distributions/exponential-distribution/
 def is_intervals_sequence_exponentially_distributed(intervals: list[tuple[float, float, int]],
                                                     confidence_level: float) -> bool:
     result = is_intervals_sequence_distributed_like(
         intervals,
-        exponential_distribution_function_generator,
-        confidence_level
-    )
-    return result
-
-
-# https://real-statistics.com/other-key-distributions/exponential-distribution/
-def is_discrete_sequence_exponentially_distributed(discrete: list[tuple[float, int]], confidence_level: float) -> bool:
-    result = is_discrete_sequence_distributed_like(
-        discrete,
         exponential_distribution_function_generator,
         confidence_level
     )
@@ -231,7 +190,8 @@ s = '75 85 84 81 84 80 82 76 75 77 80 82 81 84 85 ' \
 
 nums = float_sequence_from_str(s, ' ')
 nums_count = nums_count_frequency_tuples(nums)
-print(is_discrete_sequence_normally_distributed(
-    nums_count,
+intervals = interval_sequence(nums_count)
+print(is_intervals_sequence_normally_distributed(
+    intervals,
     0.05
 ))

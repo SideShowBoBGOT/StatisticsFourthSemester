@@ -63,25 +63,3 @@ def mean_square_dispersion_trust_interval(n, probability, s2) -> tuple[float, fl
 
 def prob_pairs_for_x_squared(probability: float):
     return (1 - probability) / 2, (1 + probability) / 2
-
-
-def battler(ns: list[int], s2s: list[float]):
-    k = len(ns)
-    N = sum(ns)
-    s2p = 0
-    sum_si = 0
-    for ni, si in zip(ns, s2s):
-        sum_si += (ni - 1) * si
-    s2p = sum_si / (N - k)
-    sum_si_ln = 0
-    for ni, si in zip(ns, s2s):
-        sum_si_ln += (ni - 1) * math.log(si, math.e)
-    M = (N - k) * math.log(s2p, math.e) - sum_si_ln
-    c = 1 + (1 / (3 * (k - 1))) * (sum([1 / (n - 1) for n in ns]) - 1 / (N - k))
-    T = M / c
-    if k > 3:
-        k = k - 1
-    t = chi_squared_distribution(0.01, k)
-    print(T < t)
-
-battler([9, 13, 15], [3.2, 3.8, 6.3])

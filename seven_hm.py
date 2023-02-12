@@ -75,9 +75,6 @@ def correlation_analysis(nums_one: list[float], nums_two: list[float]):
     print(f'is_dependent: {is_nums_dependent(r_xy, n, 0.001)}')
 
 
-nums_one = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
-nums_two = [0.5, 0.9, 1.4, 2.5, 3.5, 3.9, 4.5, 5.1, 7.1, 7.8, 8.2, 8.7, 9.6, 12.3, 13.6, 15.4, 17.3]
-
 s_one = '1 2 3 4 6 7 8 10'
 s_two = '15 16 18 19 21 22 25 27'
 nums_one = [float(el) for el in s_one.split(' ')]
